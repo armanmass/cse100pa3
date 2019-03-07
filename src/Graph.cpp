@@ -8,20 +8,32 @@
 #include <string>
 #include <utility>
 
+#include <unordered_map>
+#include <queue>
+
 using namespace std;
 
-Graph::Graph(void)
-    : nodes(0) {}
+Graph::Graph(void){
+}
 
 Graph::~Graph(void) {
-  for (auto itr : nodes) {
+  for (auto itr : nodeMap)
     delete itr.second;
-  }
 }
 
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
-//TODO
+void Graph::addNode(int idNumber, int friendID){
+  vector<HCNode*> newNeighbor;
+  HCNode* friendNode = nodeMap.find(friendID).second;
 
+  if(nodeMap.find(idNumber) != nodeMap.end())
+    *(nodeMap.find(idNumber))->neighbors.push_back(friendNode);
+  else{
+    neighbors.push_back(friendNode);
+    Node* newID = new Node(idNumber, 0, -1, false, newNeighbor);
+    nodeMap.insert(idNumber, newID);
+  }
+}
  
 /* Read in relationships from an inputfile to create a graph */
 
@@ -46,7 +58,10 @@ bool Graph::loadFromFile(const char* in_filename) {
     }
 
     //TODO - YOU HAVE THE PAIR OF IDS OF 2 FRIENDS IN 'RECORD'. WHAT DO NEED TO DO NOW? 
-      
+      int id1 = std::stoi(record[0]);
+      int id2 = std::stoi(record[1]);
+      addNode(id1, id2);
+      record.clear();
   }
 
   if (!infile.eof()) {
@@ -59,9 +74,48 @@ bool Graph::loadFromFile(const char* in_filename) {
 }
 
 /* Implement pathfinder*/
-//TODO 
-bool Graph::pathfinder(Node* from, Node* to) {
-  
+bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
+  for (auto itr : nodeMap) {
+    itr.second->visited = false;
+    itr.second->dist = 0;
+    itr.second->prev = 0;
+  }
+  vector<HCNode*> reverse;
+
+  std::queue<Node*> q;
+  q.push(from);
+
+  while(!q.isEmpty()){
+    Node* qNode = q.top();
+    q.pop();
+
+    if(qNode == to){
+      while(qNode){
+        reverse.push_back(qNode);
+        qNode = qNode->prev;
+      }
+
+      for(Node* n : reverse)
+        o << n->id << " ";
+      o << "\n";
+
+      return true;
+    }
+
+    for(Node* n : qNode->neighbors){
+      if(!n->visited){
+        n->visited = true;
+        n->dist = qNode->dist + 1;
+        q.push(n);
+      }
+    }
+    o << "\n";
+    return false;
+  }
+}
+
+Node* Graph::getNode(int id){
+  return nodeMap.find(id).second;
 }
 
 /* Implement social gathering*/

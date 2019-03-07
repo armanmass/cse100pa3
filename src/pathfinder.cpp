@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include "Graph.hpp"
-
+#include "Node.hpp"
 using namespace std;
 
 void usage(char* program_name) {
@@ -31,6 +31,29 @@ int main(int argc, char* argv[]) {
   //TODO   
  /* You can call the pathfinder function from here */
 
+  Graph g = new Graph();
+  ofstream o;
+  o.open(argv[3]);
+
+  g.loadFromFile(graph_filename);
+  ifstream infile(pairs_filename);
+
+  int id1;
+  int id2;
+
+  while (infile) {
+    if (infile.peek() == -1) break;
+    infile >> id1;
+    infile >> id2;
+
+    Node* n1 = g.getNode(id1);
+    Node* n2 = g.getNode(id2);
 
     
+  }
+
+
+  o.close();
+
+  return 0;
 }  
