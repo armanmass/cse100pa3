@@ -1,9 +1,8 @@
-#ifndef HCNODE_HPP
-#define HCNODE_HPP
+#ifndef NODE_HPP
+#define NODE_HPP
 
 #include <iostream>
 #include <vector>
-#include "Node.hpp"
 
 using namespace std;
 
@@ -17,7 +16,7 @@ public:
 
     Node(int id,
         int dist,
-        int prev,
+        Node* prev,
         bool visited,
         std::vector<Node*> neighbors)
         : id(id), dist(dist), prev(prev), visited(visited), neighbors(neighbors) { }
@@ -26,5 +25,4 @@ public:
 
 };
 
-
-#endif // HCNODE_HPP
+#endif // NODE_HPP

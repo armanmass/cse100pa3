@@ -31,9 +31,9 @@ int main(int argc, char* argv[]) {
   //TODO   
  /* You can call the pathfinder function from here */
 
-  Graph g = new Graph();
+  Graph g;
   ofstream o;
-  o.open(argv[3]);
+  o.open(output_filename);
 
   g.loadFromFile(graph_filename);
   ifstream infile(pairs_filename);
@@ -49,11 +49,8 @@ int main(int argc, char* argv[]) {
     Node* n1 = g.getNode(id1);
     Node* n2 = g.getNode(id2);
 
-    
+    g.pathfinder(n1, n2, o);
   }
 
-
   o.close();
-
-  return 0;
 }  
