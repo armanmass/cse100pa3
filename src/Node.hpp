@@ -19,7 +19,7 @@ public:
         std::vector<Node*> neighbors)
         : id(id), prev(prev), visited(visited), neighbors(neighbors) { }
 
-    ~Node();
+    ~Node() { }
 
 };
 

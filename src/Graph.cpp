@@ -1,4 +1,5 @@
 #include "Graph.hpp"
+#include "Node.hpp"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -145,4 +146,3 @@ Node* Graph::getNode(int id){
 void Graph::socialgathering(vector<string>& invitees, const int& k) {
 
 }
-
