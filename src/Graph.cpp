@@ -22,24 +22,34 @@ Graph::~Graph() {
 /* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
 void Graph::addNode(int idNumber, int friendID){
   vector<Node*> newNeighbor;
+  Node* idNode;
   Node* friendNode;
 
-  if(nodeMap.find(friendID) != nodeMap.end())
-      friendNode = nodeMap.find(friendID)->second;
-  else{
-      friendNode = new Node(friendID, 0, 0, false, newNeighbor);
+  if(nodeMap.find(idNumber) != nodeMap.end()){
+    if(nodeMap.find(friendID) != nodeMap.end()){
+      nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
+      nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
+    }else{
+      friendNode = new Node(friendID, 0, false, newNeighbor);
       nodeMap.insert({friendID, friendNode});
+      nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
+      nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
+    }
+  }else{
+    if(nodeMap.find(friendID) != nodeMap.end()){
+      idNode = new Node(idNumber, 0, false, newNeighbor);
+      nodeMap.insert({idNumber, idNode});
+      nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
+      nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
+    }else{
+      idNode = new Node(idNumber, 0, false, newNeighbor);
+      friendNode = new Node(friendID, 0, false, newNeighbor);
+      nodeMap.insert({idNumber, idNode});
+      nodeMap.insert({friendID, friendNode});
+      nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
+      nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
+    }
   }
-
-  if(nodeMap.find(idNumber) != nodeMap.end())  
-    nodeMap.find(idNumber)->second->neighbors.push_back(friendNode);
-  else{
-    newNeighbor.push_back(friendNode);
-    Node* newID = new Node(idNumber, 0, 0, false, newNeighbor);
-    nodeMap.insert({idNumber, newID});
-    delete newID;
-  }
-  delete friendNode;
 }
  
 /* Read in relationships from an inputfile to create a graph */
@@ -84,12 +94,12 @@ bool Graph::loadFromFile(const char* in_filename) {
 bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
   for (auto itr : nodeMap) {
     itr.second->visited = false;
-    itr.second->dist = 0;
     itr.second->prev = 0;
   }
   vector<Node*> reverse;
 
   std::queue<Node*> q;
+  from->visited = true;
   q.push(from);
 
   while(!q.empty()){
@@ -100,27 +110,29 @@ bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
       while(qNode){
         reverse.push_back(qNode);
         qNode = qNode->prev;
-        cout << "test";
       }
 
       while(!reverse.empty()) {
-        o << reverse.back()->id << " ";
+        o << reverse.back()->id;
+        if(reverse.size() > 1)
+          o << " ";
         reverse.pop_back();
       }
       o << "\n";
-
+      while(!q.empty())
+        q.pop();
       return true;
     }
 
     for(Node* n : qNode->neighbors){
       if(!n->visited){
         n->visited = true;
-        n->dist = qNode->dist + 1;
         n->prev = qNode;
         q.push(n);
       }
     }
   }
+  o << "\n";
   return false;
 }
 
