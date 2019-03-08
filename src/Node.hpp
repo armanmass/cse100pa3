@@ -1,3 +1,9 @@
+/*
+Arman Massoudian
+3/7/2019
+Node Header
+PA3
+*/
 #ifndef NODE_HPP
 #define NODE_HPP
 

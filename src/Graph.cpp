@@ -1,3 +1,9 @@
+/*
+Arman Massoudian
+3/7/2019
+Build Graph and finds shortest path between vertices in graph.
+PA3
+*/
 #include "Graph.hpp"
 #include "Node.hpp"
 #include <algorithm>
@@ -14,13 +20,19 @@
 using namespace std;
 
 Graph::Graph() {}
-
+/*
+Graph destructor iterates over pairs and deletes them.
+*/
 Graph::~Graph() {
   for (auto itr : nodeMap)
     delete itr.second;
 }
 
-/* Add a node to the graph representing person with id idNumber and add a connection between two nodes in the graph. */
+/* 
+*addNode takes in two vertice ids and inserts into the map on a case by case basis.
+*4 Cases: TT, TF, FT, FT
+*F= in map T= not in map
+*/
 void Graph::addNode(int idNumber, int friendID){
   vector<Node*> newNeighbor;
   Node* idNode;
@@ -54,10 +66,10 @@ void Graph::addNode(int idNumber, int friendID){
 }
  
 /* Read in relationships from an inputfile to create a graph */
-
 bool Graph::loadFromFile(const char* in_filename) {
   ifstream infile(in_filename);
 
+  //parse input string reading two strings delimited by a space
   while (infile) {
     string s;
     if (!getline(infile, s)) break;
@@ -75,7 +87,7 @@ bool Graph::loadFromFile(const char* in_filename) {
       continue;
     }
 
-    //TODO - YOU HAVE THE PAIR OF IDS OF 2 FRIENDS IN 'RECORD'. WHAT DO NEED TO DO NOW? 
+    //convert parsed strings into integers and add to graph
       int id1 = std::stoi(record[0]);
       int id2 = std::stoi(record[1]);
       addNode(id1, id2);
@@ -93,16 +105,19 @@ bool Graph::loadFromFile(const char* in_filename) {
 
 /* Implement pathfinder*/
 bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
+  //searching for path from a node to itself
   if(from == to){
     o << from->id << "\n";
     return true;
   }
   
+  //case if either node DNE in graph
   if(!from || !to){
     o << "\n";
     return false;
   }
 
+  //BFS
   for (auto itr : nodeMap) {
     itr.second->visited = false;
     itr.second->prev = 0;
@@ -129,9 +144,8 @@ bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
           o << " ";
         reverse.pop_back();
       }
+
       o << "\n";
-      while(!q.empty())
-        q.pop();
       return true;
     }
 
@@ -147,6 +161,7 @@ bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
   return false;
 }
 
+//getter method for Node in map
 Node* Graph::getNode(int id){
   if(nodeMap.find(id) == nodeMap.end())
     return 0;

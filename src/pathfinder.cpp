@@ -1,3 +1,10 @@
+/*
+Arman Massoudian
+3/7/2019
+Driver method takes input files builds graph finds paths and 
+print them to file.
+PA3
+*/
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -28,9 +35,6 @@ int main(int argc, char* argv[]) {
   char* pairs_filename = argv[2];
   char* output_filename = argv[3];
 
-  //TODO   
- /* You can call the pathfinder function from here */
-
   Graph g;
   ofstream o;
   o.open(output_filename);
@@ -38,18 +42,33 @@ int main(int argc, char* argv[]) {
   g.loadFromFile(graph_filename);
   ifstream infile(pairs_filename);
 
-  int id1;
-  int id2;
-
+  //read strings in as ints find their nodes then find 
+  //shortest path between them using BFS
   while (infile) {
-    if (infile.peek() == -1) break;
-    infile >> id1;
-    infile >> id2;
+    string s;
+    if (!getline(infile, s)) break;
 
-    Node* n1 = g.getNode(id1);
-    Node* n2 = g.getNode(id2);
+    istringstream ss(s);
+    vector<string> record;
 
-    g.pathfinder(n1, n2, o);
+    while (ss) {
+      string s;
+      if (!getline(ss, s, ' ')) break;
+      record.push_back(s);
+    }
+
+    if (record.size() != 2) {
+      continue;
+    }
+
+    //convert parsed strings into integers to find node
+    //then find shortest path
+      int id1 = std::stoi(record[0]);
+      int id2 = std::stoi(record[1]);
+      Node* n1 = g.getNode(id1);
+      Node* n2 = g.getNode(id2);
+      g.pathfinder(n1, n2, o);
+      record.clear();
   }
 
   o.close();
