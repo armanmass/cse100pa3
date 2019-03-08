@@ -106,7 +106,7 @@ bool Graph::loadFromFile(const char* in_filename) {
 /* Implement pathfinder*/
 bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
   //searching for path from a node to itself
-  if(from == to){
+  if((from == to) && (from > 0)){
     o << from->id << "\n";
     return true;
   }
