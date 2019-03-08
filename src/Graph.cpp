@@ -93,6 +93,16 @@ bool Graph::loadFromFile(const char* in_filename) {
 
 /* Implement pathfinder*/
 bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
+  if(from == to){
+    o << from->id << "\n";
+    return true;
+  }
+  
+  if(!from || !to){
+    o << "\n";
+    return false;
+  }
+
   for (auto itr : nodeMap) {
     itr.second->visited = false;
     itr.second->prev = 0;
@@ -138,6 +148,8 @@ bool Graph::pathfinder(Node* from, Node* to, ostream & o) {
 }
 
 Node* Graph::getNode(int id){
+  if(nodeMap.find(id) == nodeMap.end())
+    return 0;
   return nodeMap.find(id)->second;
 }
 
