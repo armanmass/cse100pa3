@@ -172,113 +172,32 @@ Node* Graph::getNode(int id){
 /* Implement social gathering*/
 //TODO
 void Graph::socialgathering(vector<int>& invitees, const int& k) {
-  int md = 0;
-  for(auto itr : nodeMap){
+  for(auto itr : nodeMap)
     itr.second->degree = itr.second->neighbors.size();
-    if(itr.second->degree > md)
-      md = itr.second->degree;
-  }
-
-  std::list<Node*> output;
-  std::vector<std::list<Node*>> deg(md + 1);
+  
+  std::priority_queue<Node*, std::vector<Node*>, NodePtrComp> pq;
 
   for(auto itr : nodeMap)
-    deg[itr.second->degree].push_back(itr.second);
-  
+    pq.push(itr.second);
 
-  unsigned int max = 0;
-  Node* temp = nullptr;
-  for(unsigned int i = 0; i < nodeMap.size(); i++){
-    temp = nullptr;
-    unsigned int j = 0;
-    while(deg[j].empty()) j++;
-    max = max(max, j);
-    temp = deg[j].front();
-    deg[j].pop_front();
-    output.push_back(temp);
-    temp->visited = true;
-
-    for(Node* n : temp->neighbors){
-      if(!n->visited){
-        n->degree--;
-        deg[n->degree].push_back(n);
-        deg[n->degree+1].remove(n);
+  while(!pq.empty()){
+    Node* p = pq.top();
+    pq.pop();
+    if(!p->visited){
+      p->core = p->degree;
+      for(Node* n : p->neighbors){
+        if(n->degree > p->degree){
+          n->degree--;
+          pq.push(n);
+        }
+        p->visited = true;
       }
     }
   }
-
-  while(!output.empty()){
-    if(output.front()->degree >= k)
-      invitees.push_back(output.front()->id);
-    output.pop_front();
-  }
-  std::sort(invitees.begin(), invitees.end());
-}
-
-vector<int> Graph::cores(){
-  int n, d, md, i, start, num;
-  int v, u, w, du, pu, pw;
-
-  n = nodeMap.size(); md = 0;
-  cout << n << " " << endl;
-  vector<int> pos(n,0);
-  vector<int> bin(n,0);
-  vector<int> vert(n,0);
-  vector<int> deg(n,0);
-  v = 1;
-  cout << n << " " << endl;
   for(auto itr : nodeMap){
-    deg[v] = itr.second->neighbors.size();
-    if(deg[v] > md)
-      md = deg[v];
-    v++;
+    if(itr.second->degree >= k)
+      invitees.push_back(itr.second->id);
   }
-
-  for(d = 0; d <= md; d++)
-    bin[d] = 0;
-
-  for(v = 1; v <= n; v++)
-    bin[deg[v]]++;
-
-start = 1;
-for(d = 0; d <= md; d++){
-  cout << d << " " << bin[d] << endl;
-  num = bin[d];
-  bin[d] = start;
-  start += num;
- }
-
- for(v = 1; v <= n; v++){
-   pos[v] = bin[deg[v]];
-   vert[pos[v]] = v;
-   bin[deg[v]]++;
- }
-
- for(d = md; d >= 1; d--)
-   bin[d] = bin[d-1];
- bin[0] = 1;
-
- for(i = 1; i <= n; i++){
-   v = vert[i];
-   if(nodeMap.find(v) != nodeMap.end()){
-   for(Node* nptr : nodeMap.find(v)->second->neighbors){
-     u = nptr->id;
-     if(deg[u] > deg[v]){
-       du = deg[u];
-       pu = pos[u];
-       pw = bin[du];
-       w = vert[pw];
-       if(u != w){
-         pos[u] = pw;
-         pos[w] = pu;
-         vert[pu] = w;
-         vert[pw] = u;
-       }
-       bin[du]++;
-       deg[u]--;
-     }
-   }
- }
- }
- return deg;
+ 
+  std::sort(invitees.begin(), invitees.end());
 }

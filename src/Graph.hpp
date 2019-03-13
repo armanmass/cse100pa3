@@ -40,10 +40,7 @@ class Graph {
   bool pathfinder(Node* from, Node* to, ostream & o);
     
   void socialgathering(vector<int>& invitees, const int& k);
-
- private:
-  vector<int> cores();
-
+  
 };
 
 #endif  // GRAPH_HPP
