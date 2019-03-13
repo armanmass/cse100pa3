@@ -36,10 +36,8 @@ int main(int argc, char* argv[]) {
   g.loadFromFile(graph_filename);
   g.socialgathering(invite, k);
 
-  for(size_t i = 0; i < invite.size(); i++){
-    if(invite[i] >= k)
+  for(size_t i = 0; i < invite.size(); i++)
       o << invite[i] << endl;
-  }
 
   o.close();
 
