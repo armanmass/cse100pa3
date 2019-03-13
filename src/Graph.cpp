@@ -17,7 +17,6 @@ PA3
 #include <unordered_map>
 #include <queue>
 #include <list>
-#include <array>
 
 using namespace std;
 
@@ -180,38 +179,40 @@ void Graph::socialgathering(vector<int>& invitees, const int& k) {
       md = itr.second->degree;
   }
 
-
   std::list<Node*> output;
-  std::array<std::list<Node*>, md + 1> deg;
+  std::vector<std::list<Node*>> deg(md + 1);
 
-  for(auto itr : nodeMap){
-    deg[itr.second->degree].insert(itr.second);
-  }
+  for(auto itr : nodeMap)
+    deg[itr.second->degree].push_back(itr.second);
+  
 
-  int k2 = 0;
+  unsigned int max = 0;
   Node* temp = nullptr;
-  for(int i = 0; i < nodeMap.size(); i++){
+  for(unsigned int i = 0; i < nodeMap.size(); i++){
     temp = nullptr;
-    while(!temp){
-      if(deg[i].begin() != deg[i].end()){
-        temp = deg[i].front();
-        output.insert(temp);
-        deg[i].pop_front();
-        temp->visited = true;
-      }
-    }
-    k2 = max(k2, i);
+    unsigned int j = 0;
+    while(deg[j].empty()) j++;
+    max = max(max, j);
+    temp = deg[j].front();
+    deg[j].pop_front();
+    output.push_back(temp);
+    temp->visited = true;
 
     for(Node* n : temp->neighbors){
       if(!n->visited){
         n->degree--;
-        deg[n->degree].insert(n);
+        deg[n->degree].push_back(n);
         deg[n->degree+1].remove(n);
       }
     }
-
   }
 
+  while(!output.empty()){
+    if(output.front()->degree >= k)
+      invitees.push_back(output.front()->id);
+    output.pop_front();
+  }
+  std::sort(invitees.begin(), invitees.end());
 }
 
 vector<int> Graph::cores(){
