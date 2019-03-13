@@ -42,7 +42,7 @@ class Graph {
   void socialgathering(vector<int>& invitees, const int& k);
 
  private:
-  void cores(vector<int>& deg);
+  vector<int> cores();
 
 };
 

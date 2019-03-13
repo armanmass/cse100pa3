@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
  //TODO
  /* You can call the social gathering function from here */
   Graph g;
-  vector<int> invite;
+  vector<int> invite(10000, 0);
   ofstream o;
   o.open(output_filename);
   const int k = std::stoi(argv[2]);
@@ -36,8 +36,10 @@ int main(int argc, char* argv[]) {
   g.loadFromFile(graph_filename);
   g.socialgathering(invite, k);
 
-  for(int i : invite)
-    o << i << endl;
+  for(size_t i = 0; i < invite.size(); i++){
+    if(invite[i] >= k)
+      o << i << endl;
+  }
 
   o.close();
 
