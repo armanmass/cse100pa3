@@ -23,9 +23,23 @@ int main(int argc, char* argv[]) {
   }
   char* graph_filename = argv[1];
   char* output_filename = argv[3];
-  istringstream ss(argv[2]);
+  //istringstream ss(argv[2]);
 
  //TODO
  /* You can call the social gathering function from here */
+  Graph g;
+  vector<int> invite;
+  ofstream o;
+  o.open(output_filename);
+  const int k = std::stoi(argv[2]);
 
+  g.loadFromFile(graph_filename);
+  g.socialgathering(invite, k);
+
+  for(int i : invite)
+    o << i << endl;
+
+  o.close();
+
+  return 0;
 }

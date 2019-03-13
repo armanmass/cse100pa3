@@ -43,20 +43,20 @@ void Graph::addNode(int idNumber, int friendID){
       nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
       nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
     }else{
-      friendNode = new Node(friendID, 0, false, newNeighbor);
+      friendNode = new Node(friendID, 0, 0, 0, false, newNeighbor);
       nodeMap.insert({friendID, friendNode});
       nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
       nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
     }
   }else{
     if(nodeMap.find(friendID) != nodeMap.end()){
-      idNode = new Node(idNumber, 0, false, newNeighbor);
+      idNode = new Node(idNumber, 0, 0, 0, false, newNeighbor);
       nodeMap.insert({idNumber, idNode});
       nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
       nodeMap.find(friendID)->second->neighbors.push_back(nodeMap.find(idNumber)->second);
     }else{
-      idNode = new Node(idNumber, 0, false, newNeighbor);
-      friendNode = new Node(friendID, 0, false, newNeighbor);
+      idNode = new Node(idNumber, 0, 0, 0, false, newNeighbor);
+      friendNode = new Node(friendID, 0, 0, 0, false, newNeighbor);
       nodeMap.insert({idNumber, idNode});
       nodeMap.insert({friendID, friendNode});
       nodeMap.find(idNumber)->second->neighbors.push_back(nodeMap.find(friendID)->second);
@@ -170,6 +170,34 @@ Node* Graph::getNode(int id){
 
 /* Implement social gathering*/
 //TODO
-void Graph::socialgathering(vector<string>& invitees, const int& k) {
+void Graph::socialgathering(vector<int>& invitees, const int& k) {
+  std::priority_queue<Node*, std::vector<Node*>, NodePtrComp> pq;
+  int mid = 0;
+  for(auto itr : nodeMap){
+    itr.second->degree = itr.second->neighbors.size();
+    if(itr.second->id > mid) mid = itr.second->id;
+  }
 
+  for(int i = 0; i <= mid; i++){
+    if(nodeMap.find(i) != nodeMap.end()){
+      Node* curr = nodeMap.find(i)->second;
+      curr->core = curr->degree;
+      for(Node* n : curr->neighbors){
+        if(n->degree > curr->degree)
+          n->degree -= 1;
+      }
+    }
+  }
+
+  for(auto itr : nodeMap){
+    pq.push(itr.second);
+  }
+
+  while(!pq.empty()){
+    if(pq.top()->degree >= k)
+      invitees.push_back(pq.top()->id);
+    pq.pop();
+  }
+
+  std::sort(invitees.begin(), invitees.end());
 }

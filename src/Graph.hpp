@@ -13,6 +13,13 @@ PA3
 
 using namespace std;
 
+class NodePtrComp {
+  public:
+    bool operator()(Node*& lhs, Node*& rhs) const {
+        return *lhs < *rhs;
+    }
+};
+
 class Graph {
  public:
   std::unordered_map<int, Node*> nodeMap;
@@ -25,13 +32,17 @@ class Graph {
   void addNode(int idNumber, int neighbor);
 	
   Node* getNode(int id);
+  
   /* YOU CAN MODIFY THIS IF YOU LIKE , in_filename : THE INPUT FILENAME */
 
   bool loadFromFile(const char* in_filename);
 
   bool pathfinder(Node* from, Node* to, ostream & o);
     
-  void socialgathering(vector<string>& invitees, const int& k);
+  void socialgathering(vector<int>& invitees, const int& k);
+
+ private:
+  void cores(vector<int>& deg);
 
 };
 
