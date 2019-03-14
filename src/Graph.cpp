@@ -31,8 +31,8 @@ Graph::~Graph() {
 
 /* 
 *addNode takes in two vertice ids and inserts into the map on a case by case basis.
-*4 Cases: TT, TF, FT, FT
-*F= in map T= not in map
+*4 Cases: TT, TF, FT, FF
+*F= not in map T= in map
 */
 void Graph::addNode(int idNumber, int friendID){
   vector<Node*> newNeighbor;
@@ -169,17 +169,23 @@ Node* Graph::getNode(int id){
   return nodeMap.find(id)->second;
 }
 
-/* Implement social gathering*/
-//TODO
+/*Implement socialgathering*/
 void Graph::socialgathering(vector<int>& invitees, const int& k) {
+  //set degrees
   for(auto itr : nodeMap)
     itr.second->degree = itr.second->neighbors.size();
   
+  //create min heap priority queue that compares nodes based on degree
+  //lower degree has higher priority tie breaking based on node id
   std::priority_queue<Node*, std::vector<Node*>, NodePtrComp> pq;
 
+  //push all nodes on map into pq
   for(auto itr : nodeMap)
     pq.push(itr.second);
 
+  //cores algorithm represented in discussion
+  //resorting queue would take too long so we just push
+  //back into queue and if a node is already visited we just ignore it when popping
   while(!pq.empty()){
     Node* p = pq.top();
     pq.pop();
@@ -198,6 +204,7 @@ void Graph::socialgathering(vector<int>& invitees, const int& k) {
     if(itr.second->degree >= k)
       invitees.push_back(itr.second->id);
   }
- 
+  
+  //sort ids (ints)
   std::sort(invitees.begin(), invitees.end());
 }
