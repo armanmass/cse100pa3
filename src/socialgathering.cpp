@@ -1,3 +1,10 @@
+/*
+Arman Massoudian
+3/7/2019
+Driver method takes input files builds graph finds paths and 
+print them to file.
+PA3
+*/
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -25,10 +32,9 @@ int main(int argc, char* argv[]) {
   char* output_filename = argv[3];
   //istringstream ss(argv[2]);
 
- //TODO
- /* You can call the social gathering function from here */
+ //call social gathering
   Graph g;
-  vector<int> invite;
+  vector<int> invite; //store ids of kcore nodes
   ofstream o;
   o.open(output_filename);
   const int k = std::stoi(argv[2]);
