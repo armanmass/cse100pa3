@@ -1,8 +1,7 @@
 /*
 Arman Massoudian
 3/7/2019
-Driver method takes input files builds graph finds paths and 
-print them to file.
+Driver method takes input files builds graph finds kcore nodes.
 PA3
 */
 #include <cstdlib>
